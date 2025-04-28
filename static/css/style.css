@@ -3,12 +3,16 @@
 #spinner {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+  transition:
+    opacity 0.5s ease-out,
+    visibility 0s linear 0.5s;
   z-index: 99999;
 }
 
 #spinner.show {
-  transition: opacity 0.5s ease-out, visibility 0s linear 0s;
+  transition:
+    opacity 0.5s ease-out,
+    visibility 0s linear 0s;
   visibility: visible;
   opacity: 1;
 }
@@ -388,7 +392,8 @@
 .bg-breadcrumb {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url(../img/carousel-1.jpg);
   background-position: center center;
   background-repeat: no-repeat;

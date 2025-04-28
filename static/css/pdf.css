@@ -1,0 +1,26 @@
+.pdf-container {
+    /* Ubah dari flex ke block atau grid agar layout lebih stabil */
+    display: block;
+    max-height: 80vh; /* Batasi tinggi maksimal */
+    overflow-y: auto; /* Izinkan scroll vertikal */
+    padding: 0; /* Menghapus padding yang tidak perlu */
+    text-align: center; /* Agar konten diratakan secara horizontal */
+}
+
+.pdf-container canvas {
+    /* Hapus margin-bottom untuk mencegah loncatan */
+    margin-bottom: 0;
+    display: inline-block; /* Biarkan canvas berdampingan jika perlu */
+}
+
+.canvas-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: grab;
+    overflow: hidden;
+    touch-action: none; /* Agar gesture touch tidak dikacaukan oleh browser */
+}
+
+.canvas-wrapper.dragging {
+    cursor: grabbing;
+}
