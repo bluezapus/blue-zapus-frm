@@ -25,8 +25,8 @@ class Developer(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.slug_dev = slugify(self.title)
-        return super(Developer, slef).save(*args, **kwargs)
+        self.slug_dev = slugify(self.name)
+        return super(Developer, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name

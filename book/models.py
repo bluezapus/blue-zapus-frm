@@ -1,5 +1,8 @@
+from bluebase.settings import AUTH_USER_MODEL
 from django.db import models
 from django.utils.text import slugify
+
+from django.conf import settings
 
 
 # Create your models here.
@@ -8,6 +11,8 @@ class BookCategory(models.Model):
     slug_book_category = models.SlugField(blank=True, editable=False)
     description = models.CharField()
     # tags
+    # publish
+    # update
 
     def save(self, *args, **kwargs):
         self.slug_book_category = slugify(self.title)
@@ -18,11 +23,22 @@ class BookCategory(models.Model):
 
 
 class BookCollection(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=1,
+    )
     title = models.CharField(max_length=250)
     author = models.CharField(max_length=250)
     description = models.TextField()
     category = models.ForeignKey(
-        BookCategory, on_delete=models.CASCADE, related_name="books"
+        BookCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="books",
     )
     cover_img = models.ImageField(upload_to="book_covers/")
     file = models.FileField(upload_to="books/")

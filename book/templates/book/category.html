@@ -1,0 +1,427 @@
+<!-- extends -->
+{% extends 'base.html' %}
+<!-- body -->
+{% block contents %} {% load static %}
+<!-- Spinner Start -->
+{% include 'snippets/spinner.html' %}
+<!-- Topbar Start -->
+{% include 'snippets/topbar.html' %}
+<!-- Topbar End -->
+
+<!-- Navbar & Hero Start -->
+{% include 'snippets/navbar-all.html' %}
+<!-- Navbar & Hero End -->
+
+<!-- Services Start -->
+<div class="container-fluid service py-5">
+    <div class="container py-5">
+        <div
+            class="text-center mx-auto pb-5 wow fadeInUp"
+            data-wow-delay="0.2s"
+            style="max-width: 800px"
+        >
+            <h4 class="text-primary">Our Services</h4>
+            <h1 class="display-5 mb-2">We Services provided best offer</h1>
+            <div class="container text-center mt-4">
+                <h2 class="mb-3">We Services Provided Best Offer</h2>
+                <style>
+                    .category-pill {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 40px;
+                        padding: 0 20px;
+                        border: 2px solid #0d6efd;
+                        border-radius: 50px;
+                        background-color: white;
+                        color: #0d6efd;
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        margin: 8px;
+                        white-space: nowrap;
+                    }
+
+                    .category-pill:hover,
+                    .category-pill.active {
+                        background-color: #0d6efd;
+                        color: white;
+                    }
+                    .category-pill.active a {
+                        color: white;
+                    }
+                    .category-pill a {
+                        color: #0d6efd;
+                        text-decoration: none;
+                        transition: color 0.3s ease;
+                    }
+
+                    .category-pill:hover a {
+                        color: white;
+                    }
+
+                    .search-bar {
+                        width: 100%;
+                        max-width: 400px;
+                        margin-top: 30px;
+                        padding: 15px;
+                        border: 2px solid #0d6efd;
+                        border-radius: 50px;
+                        font-size: 16px;
+                        transition: all 0.3s ease;
+                    }
+
+                    .search-bar:focus {
+                        outline: none;
+                        border-color: #0056b3;
+                    }
+                </style>
+
+                <div class="d-flex justify-content-center flex-wrap">
+                    <div class="category-pill">
+                        <a href="/book/">all</a>
+                    </div>
+                    {% for category in category_choices %}
+                    <div
+                        class="category-pill {% if category.slug_book_category == slug_category %} active {% endif %}"
+                    >
+                        <a href="/book/category/{{category.slug_book_category}}"
+                            >{{category.title}}</a
+                        >
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Search Bar -->
+                <form method="get" action="">
+                    <input
+                        type="text"
+                        id="search_input"
+                        name="q"
+                        class="search-bar"
+                        placeholder="Search for book..."
+                        value="{{request.GET.q}}"
+                    />
+                </form>
+                <!-- search results -->
+                <div id="search-results"></div>
+            </div>
+        </div>
+        <script>
+            document
+                .getElementById("search_input")
+                .addEventListener("input", function () {
+                    const query = this.value.toLowerCase();
+                    const books = document.querySelectorAll(".service-item");
+
+                    books.forEach(function (book) {
+                        const title = book
+                            .querySelector(".book-title")
+                            .textContent.toLowerCase();
+
+                        if (title.includes(query)) {
+                            book.style.display = "block";
+                        } else {
+                            book.style.display = "none";
+                        }
+                    });
+                });
+        </script>
+
+        <div class="row g-4">
+            {% if book_category %}
+            <!-- condition -->
+            {% for book in book_category %}
+            <div
+                class="col-lg-3 col-md-4 col-6 wow fadeInUp"
+                data-wow-delay="0.2s"
+            >
+                <div class="service-item">
+                    <div class="service-img">
+                        <img
+                            src="{{book.cover_img.url}}"
+                            class="img-fluid rounded-top w-100"
+                            alt="Image"
+                            style="height: 170px; object-fit: cover"
+                        />
+                    </div>
+                    <div class="rounded-bottom p-4">
+                        <a href="#" class="h6 d-inline-block book-title">
+                            {{book.title}}
+                        </a>
+                        <p class="">Lorem</p>
+                        <a
+                            class="btn btn-primary rounded-pill py-2 px-4"
+                            href="#"
+                            data-bs-toggle="modal"
+                            data-bs-target="#bookModal"
+                            data-book-title="{{ book.title }}"
+                            data-pdf-url="{{ book.file.url }}"
+                            >Read</a
+                        >
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- else -->
+            {% else %}
+            <div class="row justify-content-center">
+                <div
+                    class="col-lg-3 col-md-4 col-6 wow fadeInUp"
+                    data-wow-delay="0.8s"
+                >
+                    <!-- konten -->
+                    <div class="alert alert-info">
+                        <p>Content is not yet available</p>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+        </div>
+
+        <!-- Pagination -->
+        <div class="text-center mt-4">
+            <nav aria-label="Page navigation">
+                {% if list_book.has_other_pages %}
+                <ul class="pagination justify-content-center">
+                    <!-- navigasi kiri -->
+                    {% if list_book.has_previous %}
+                    <li class="page-item">
+                        <a
+                            class="page-link category-pill"
+                            href="?q={{ request.GET.q }}&page={{ list_book.previous_page_number }}"
+                            aria-label="Previous"
+                        >
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!-- range -->
+                    {% for i in custom_page_range %}
+                    <!-- if statement -->
+                    {% if list_book.number == i %}
+
+                    <li class="page-item active">
+                        <a class="page-link category-pill">{{i}}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a
+                            class="page-link category-pill"
+                            href="?q={{ request.GET.q }}&page={{ i }}"
+                            >{{i}}</a
+                        >
+                    </li>
+                    {% endif %}
+                    <!-- endfor -->
+                    {% endfor %}
+
+                    <!-- navigasi kanan -->
+                    {% if list_book.has_next %}
+                    <li class="page-item">
+                        <a
+                            class="page-link category-pill"
+                            href="?q={{ request.GET.q }}&page={{ list_book.next_page_number }}"
+                            aria-label="Next"
+                        >
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk menampilkan PDF -->
+
+<div
+    class="modal fade"
+    id="bookModal"
+    tabindex="-1"
+    aria-labelledby="bookModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel">read aja</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <button id="zoomIn" class="btn btn-sm btn-primary">
+                        Zoom In
+                    </button>
+                    <button id="zoomOut" class="btn btn-sm btn-secondary">
+                        Zoom Out
+                    </button>
+                </div>
+                <div
+                    id="pdfContainer"
+                    class="pdf-container"
+                    style="overflow-y: auto; max-height: 80vh"
+                ></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentScale = 1.5; // Skala render PDF
+    let currentPdfUrl = null;
+    let pdfDoc = null;
+    const pdfContainer = document.getElementById("pdfContainer");
+    const modalTitle = document.getElementById("bookModalLabel");
+
+    // Menangani klik tombol "Read" untuk membuka PDF di dalam modal
+    const readButtons = document.querySelectorAll(
+        '.btn-primary[data-bs-toggle="modal"]',
+    );
+    readButtons.forEach(function (button) {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const pdfUrl = this.getAttribute("data-pdf-url");
+            const bookTitle = this.getAttribute("data-book-title");
+
+            currentPdfUrl = pdfUrl;
+            modalTitle.textContent = bookTitle || "Read Book";
+
+            if (pdfUrl) {
+                pdfContainer.innerHTML = ""; // Kosongkan isi sebelumnya
+
+                // Memuat PDF menggunakan PDF.js
+                pdfjsLib
+                    .getDocument(pdfUrl)
+                    .promise.then(function (pdf) {
+                        pdfDoc = pdf;
+                        renderPage(1); // Mulai render dari halaman pertama
+                    })
+                    .catch(function (error) {
+                        console.error("Gagal memuat PDF:", error);
+                    });
+            } else {
+                console.error("URL PDF hilang!");
+            }
+        });
+    });
+
+    // Fungsi untuk merender halaman tertentu
+    function renderPage(pageNumber) {
+        pdfDoc
+            .getPage(pageNumber)
+            .then(function (page) {
+                const viewport = page.getViewport({ scale: currentScale });
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.marginBottom = "20px";
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport,
+                };
+
+                page.render(renderContext)
+                    .promise.then(function () {
+                        pdfContainer.appendChild(canvas);
+                        if (pageNumber < pdfDoc.numPages) {
+                            renderPage(pageNumber + 1);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error("Gagal merender halaman:", error);
+                    });
+            })
+            .catch(function (error) {
+                console.error("Gagal memuat halaman:", error);
+            });
+    }
+
+    // Zoom in dan zoom out
+    document.getElementById("zoomIn").addEventListener("click", function () {
+        currentScale += 0.2;
+        if (pdfDoc) {
+            pdfContainer.innerHTML = "";
+            renderPage(1);
+        }
+    });
+
+    document.getElementById("zoomOut").addEventListener("click", function () {
+        currentScale = Math.max(0.5, currentScale - 0.2);
+        if (pdfDoc) {
+            pdfContainer.innerHTML = "";
+            renderPage(1);
+        }
+    });
+</script>
+
+<script>
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    const container = document.getElementById("pdfContainer");
+
+    container.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        container.classList.add("dragging");
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+
+    container.addEventListener("mouseleave", () => {
+        isDragging = false;
+        container.classList.remove("dragging");
+    });
+
+    container.addEventListener("mouseup", () => {
+        isDragging = false;
+        container.classList.remove("dragging");
+    });
+
+    container.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 1.5; // scroll speed
+        container.scrollLeft = scrollLeft - walk;
+    });
+
+    // Support gesture swipe on touch devices
+    container.addEventListener("touchstart", (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+
+    container.addEventListener("touchend", () => {
+        isDragging = false;
+    });
+
+    container.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX - container.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        container.scrollLeft = scrollLeft - walk;
+    });
+</script>
+
+<!-- Footer Start -->
+{% include 'snippets/footer.html' %}
+<!-- Footer End -->
+
+{% endblock contents %}

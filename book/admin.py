@@ -4,9 +4,13 @@ from django.contrib import admin
 from .models import BookCategory, BookCollection
 
 
-class viewslug(admin.ModelAdmin):
+class slugbook(admin.ModelAdmin):
     readonly_fields = ["slug_book"]
 
 
-admin.site.register(BookCollection, viewslug)
-admin.site.register(BookCategory)
+class slugbookcat(admin.ModelAdmin):
+    readonly_fields = ["slug_book_category"]
+
+
+admin.site.register(BookCollection, slugbook)
+admin.site.register(BookCategory, slugbookcat)
