@@ -1,3 +1,4 @@
+from os import name
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -13,5 +14,7 @@ urlpatterns = [
     path("contact/", include("contact.urls")),
     path("book/", include("book.urls")),
     # registration
+    path("accounts/", include("account.urls", namespace="account")),
+    # last (no app)
     path("accounts/", include("django.contrib.auth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

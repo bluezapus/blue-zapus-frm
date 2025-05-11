@@ -94,6 +94,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "account.User"
+# redirect to page
+LOGIN_REDIRECT_URL = "/"
 
 
 # Internationalization
